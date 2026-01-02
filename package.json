@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",      
-    "deploy": "gh-pages -d dist"       
+    "deploy": "wrangler pages deploy dist"
   },
   "dependencies": {
     "hls.js": "^1.6.15",
