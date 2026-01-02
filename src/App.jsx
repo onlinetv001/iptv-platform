@@ -72,14 +72,32 @@ const App = () => {
     lines.forEach(line => {
       line = line.trim();
       if (!line) return;
+
       if (line.startsWith('#EXTINF:')) {
+        // Extract Logo
         const logoMatch = line.match(/tvg-logo="([^"]+)"/);
         if (logoMatch) currentItem.logo = logoMatch[1];
+        
+        // Extract Name (Everything after the last comma)
         const nameParts = line.split(',');
         currentItem.name = nameParts[nameParts.length - 1].trim();
-      } else if (!line.startsWith('#')) {
+      
+      } else if (line.startsWith('#')) {
+        // Ignore other headers like #EXTM3U or #EXTVLCOPT
+        return;
+      
+      } else {
+        // This is the URL line
         currentItem.url = line;
-        if (currentItem.name && currentItem.url) result.push(currentItem);
+        
+        // Check for UDP (Browsers CANNOT play these)
+        if (line.includes('udp://')) {
+           console.warn('Skipping UDP stream (browser unsupported):', currentItem.name);
+        } else if (currentItem.name && currentItem.url) {
+           result.push(currentItem);
+        }
+        
+        // Reset
         currentItem = { name: null, logo: null, url: null };
       }
     });
