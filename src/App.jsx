@@ -124,20 +124,37 @@ const App = () => {
     return result;
   };
 
-  const playChannel = (channel) => {
+const playChannel = (channel) => {
     setCurrentChannel(channel);
     setIsVideoLoading(true);
     if (hlsRef.current) hlsRef.current.destroy();
 
+    // 1. PASTE YOUR CLOUDFLARE WORKER URL HERE 👇
+    const myProxy = 'https://iptv-platform.nikhil271200meshram.workers.dev/?url='; 
+    
+    let streamUrl = channel.url;
+    
+    // 2. Logic: If the link is HTTP (Insecure), wrap it in the Proxy (Secure)
+    if (streamUrl.startsWith('http://') || streamUrl.includes('adultiptv')) {
+        streamUrl = myProxy + encodeURIComponent(channel.url);
+        console.log("Proxying Insecure Stream:", streamUrl);
+    }
+
     if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: true, startFragPrefetch: true });
+      const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          manifestLoadingTimeOut: 15000
+      });
       hlsRef.current = hls;
-      hls.loadSource(channel.url);
+      hls.loadSource(streamUrl);
       hls.attachMedia(videoRef.current);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => videoRef.current?.play().catch(() => {}));
-      hls.on(Hls.Events.ERROR, (e, data) => { if (data.fatal) { hls.destroy(); setIsVideoLoading(false); } });
+      hls.on(Hls.Events.MANIFEST_PARSED, () => videoRef.current?.play().catch(()=>{}));
+      hls.on(Hls.Events.ERROR, (e, data) => { 
+          if (data.fatal) { hls.destroy(); setIsVideoLoading(false); } 
+      });
     } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-      videoRef.current.src = channel.url;
+      videoRef.current.src = streamUrl;
       videoRef.current.play();
     }
   };
