@@ -5,7 +5,7 @@ import './App.css';
 
 // --- CONFIGURATION ---
 const PUBLIC_CATEGORIES_API = 'https://iptv-org.github.io/api/categories.json';
-const ADMIN_PASSWORD = "159753"; 
+const ADMIN_PASSWORD = "superuser007"; 
 
 const HIDDEN_CATEGORIES = [
   { id: 'premium-movies', name: 'Premium Movies' },
