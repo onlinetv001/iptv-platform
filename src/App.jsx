@@ -179,7 +179,7 @@ const App = () => {
       <div className="main-content">
         <div className="mobile-header">
            <div style={{fontWeight:'bold', display:'flex', alignItems:'center', gap:10}} onClick={handleLogoClick}>
-             <Tv color="#e50914"/> OPEN IPTV
+             <Tv color="#e50914"/> Online TV
            </div>
            <button onClick={() => setIsSidebarOpen(true)} style={{background:'none', border:'none', color:'white'}}><Menu size={28}/></button>
         </div>
