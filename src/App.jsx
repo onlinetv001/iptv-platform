@@ -129,22 +129,22 @@ const playChannel = (channel) => {
     setIsVideoLoading(true);
     if (hlsRef.current) hlsRef.current.destroy();
 
-    // 1. PASTE YOUR CLOUDFLARE WORKER URL HERE 👇
+    // 1. PASTE YOUR WORKER URL HERE 👇
     const myProxy = 'https://iptv-platform.nikhil271200meshram.workers.dev/?url='; 
     
     let streamUrl = channel.url;
     
-    // 2. Logic: If the link is HTTP (Insecure), wrap it in the Proxy (Secure)
+    // 2. If the link is HTTP, wrap it in the Proxy
     if (streamUrl.startsWith('http://') || streamUrl.includes('adultiptv')) {
         streamUrl = myProxy + encodeURIComponent(channel.url);
-        console.log("Proxying Insecure Stream:", streamUrl);
+        console.log("Using Proxy for:", streamUrl);
     }
 
     if (Hls.isSupported()) {
       const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
-          manifestLoadingTimeOut: 15000
+          manifestLoadingTimeOut: 20000
       });
       hlsRef.current = hls;
       hls.loadSource(streamUrl);
